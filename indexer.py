@@ -7,21 +7,27 @@ fields = ['infobox', 'category', 'links', 'references', 'body', 'title']
 stop_words_set = set(stopwords.words('english'))
 stemmer = SnowballStemmer(language='english')
 
-def work_with_index_list(indices, id, field, curTokens):
+totalTokens = set()
+
+def work_with_index_list(indices, id, field, curTokens, counter):
     # capturing the inverted index
     for i in range(len(curTokens)):
+        counter += 1
+        if len(curTokens[i]) > 20:
+            continue
+        totalTokens.add(curTokens[i])
         if curTokens[i] in indices[field]:
             indices[field][curTokens[i]].add(id)
         else:
             indices[field][curTokens[i]] = set()
             indices[field][curTokens[i]].add(id)
-    return indices
+    return counter, indices
 
-def add_to_index(text, id, indices):
+def add_to_index(text, id, indices, counter):
     field = 'title'        # for testing purposes
     # tokenization 
     if text == None:
-        return indices
+        return counter, indices
     tokens = field_segregator(text)
 
     for j in range(5):
@@ -38,6 +44,6 @@ def add_to_index(text, id, indices):
         curTokens = temp
 
         # capturing the inverted index
-        indices = work_with_index_list(indices, id, fields[j], curTokens)
+        counter, indices = work_with_index_list(indices, id, fields[j], curTokens, counter)
     
-    return indices
+    return counter, indices
