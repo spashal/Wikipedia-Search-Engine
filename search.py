@@ -10,14 +10,6 @@ stemmer = SnowballStemmer(language='english')
 f = open(sys.argv[1] + '/indexes.json', 'r')
 indices = json.load(f)
 
-# query = []
-# for i in range(1, len(sys.argv)):
-#     query += sys.argv[i]
-
-# temp = []
-# for i in query:
-#     temp.append(re.findall("[\w']", i.casefold()))
-# tokenizedQuery = temp
 query = sys.argv[2]
 tokenizedQuery = re.findall("[\w']+", query.casefold())
 

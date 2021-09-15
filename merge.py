@@ -13,7 +13,6 @@ def merger(no_of_files, path):
         line = f_ptr.readline().strip('\n')
         word = line.split(':')[0]
         lst = line.split(':')[1]
-        print(word)
         pq.append((word[1:], i, f_ptr, lst))
 
     # maintain a min heap of keys for each k files, their pointers and their  file numbers
@@ -36,7 +35,7 @@ def merger(no_of_files, path):
                 lst = line.split(':')[1]
                 heapq.heappush(pq, (word, cur[1], cur[2], lst))
         # when we reach our limit of tokens and each token is complete in iteself, we can make a new file, write this file name and word in another file index
-        elif tokensCount > 10000:
+        elif tokensCount > 30000:
             count_merged_files += 1
             json_dump = json.dumps(merged_index,indent=0)
             f = open(path + '/' + str(count_merged_files) + '-merged' + '.txt', 'w')
@@ -68,4 +67,3 @@ def merger(no_of_files, path):
     f.write(json_dump)
     f.close()
 
-merger(int(sys.argv[1]), sys.argv[2])

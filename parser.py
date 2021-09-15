@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as etree
 import codecs, csv, time, os, json, sys
 from indexer import *
+from merge import *
 
 # just some paths and names
 OUT_PATH = '/Users/macbook/forgit/IRE/temp/Wikipedia-Search-Engine/dump'
@@ -22,12 +23,12 @@ def write_index_to_file(name):
         count += 1
         str1 = " "
         for j in indices[i]:
-            l = list(indices[i][j])
-            string = 0
-            for k in l:
-                string *= 10
-                string += int(k)-int('0')+1
-            kkk = str(j) + "--" + str(string)
+            # l = list(indices[i][j])
+            string = ''
+            for k in range(6):
+                if indices[i][j][k] > 0:
+                    string += str(int(k)-int('0')+1) + '.' + str(indices[i][j][k]) + '-'
+            kkk = str(j) + "-" + str(string)
             temp += (kkk + str1)
         tempIndexString += i + ':' + temp + '\n'
 
@@ -130,3 +131,5 @@ f = open(sys.argv[3], 'w')
 f.write(str(counter) + '\n')
 f.write(str(len(totalTokens)))
 f.close()
+
+merger(indexFilesCount, sys.argv[2])
