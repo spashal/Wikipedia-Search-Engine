@@ -7,7 +7,7 @@ fields = ['infobox', 'category', 'links', 'references', 'body', 'title']
 stop_words_set = set(stopwords.words('english'))
 stemmer = SnowballStemmer(language='english')
 
-f = open(sys.argv[1], 'r')
+f = open(sys.argv[1] + '/indexes.json', 'r')
 indices = json.load(f)
 
 # query = []

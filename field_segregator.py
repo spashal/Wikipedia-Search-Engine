@@ -6,7 +6,6 @@ def field_segregator(text):
     arr = {}
     temp = ''
     for j in range(5):
-        # print(j, len(text))
         arr[fields[j]] = []
         beginning = 0
         if j == 0:
@@ -23,19 +22,19 @@ def field_segregator(text):
                         ctr -= 1
                     elif text[i] == '{':
                         ctr += 1
-
                 end = min(end, len(text))
-                tokens = re.findall("[\w']+", text[st.start()+10:end])
+                tokens = re.split(r'[^A-Za-z0-9]+', text[st.start()+10:end])
+                # tokens = re.findall("^[a-zA-Z0-9_]+$", text[st.start()+10:end])
                 arr[fields[j]] = tokens
             temp += text[beginning:]
-            # text, arr[fields[i]] = filter('\{\{Infobox', '}', text, 0)
     
         elif j == 1:
             temp = ''
             length = len("[[category:")
             beginning = 0
             for st in re.finditer("\[\[Category:.*\]\]", text):
-                arr[fields[j]] += re.findall("[\w']+", st[0][length:-2])
+                arr[fields[j]] = re.split(r'[^A-Za-z0-9]+', st[0][length:-2])
+                # arr[fields[j]] += re.findall("^[a-zA-Z0-9_]+$", st[0][length:-2])
                 temp += (text[beginning:st.start()])
                 beginning = st.end()
             temp += text[beginning:]
@@ -49,9 +48,9 @@ def field_segregator(text):
                     end = tt.start()
                     break
                 temp += (text[beginning:st.start()])
-                arr[fields[j]] += re.findall("[\w']+", text[st.start()+14:end-2])
+                arr[fields[j]] = re.split(r'[^A-Za-z0-9]+', text[st.start()+14:end-2])
+                # arr[fields[j]] += re.findall("^[a-zA-Z0-9_]+$", text[st.start()+14:end-2])
                 beginning = end
-            # text, arr[fields[i]] = filter('==\s*External links\s*==', , text)
             temp += text[beginning:]
         elif j == 3:
             temp = ''
@@ -63,7 +62,9 @@ def field_segregator(text):
                     end = tt.start()
                     break
                 temp += (text[beginning:st.start()])
-                arr[fields[j]] += re.findall("[\w']+", text[st.start()+20:end-2])
+                arr[fields[j]] = re.split(r'[^A-Za-z0-9]+', text[st.start()+20:end-2])
+
+                # arr[fields[j]] += re.findall("^[a-zA-Z0-9_]+$", text[st.start()+20:end-2])
                 beginning = end
             temp += text[beginning:]
             text = temp
@@ -76,7 +77,8 @@ def field_segregator(text):
                     end = tt.start()
                     break
                 temp += (text[beginning:st.start()])
-                arr[fields[j]] += re.findall("[\w']+", text[st.start()+20:end-2])
+                arr[fields[j]] += re.split(r'[^A-Za-z0-9]+', text[st.start()+20:end-2])
+                # arr[fields[j]] += re.findall("^[a-zA-Z0-9_]+$", text[st.start()+20:end-2])
                 beginning = end
             temp += text[beginning:]
             text = temp
@@ -88,12 +90,14 @@ def field_segregator(text):
                     end = tt.start()
                     break
                 temp += (text[beginning:st.start()])
-                arr[fields[j]] += re.findall("[\w']+", text[st.start()+10:end-2])
+                arr[fields[j]] += re.split(r'[^A-Za-z0-9]+', text[st.start()+10:end-2])
+                # arr[fields[j]] += re.findall("^[a-zA-Z0-9_]+$", text[st.start()+10:end-2])
                 beginning = end
             temp += text[beginning:]
 
         else:
-            arr[fields[j]] += re.findall("[\w']+", text)
+            arr[fields[j]] += re.split(r'[^A-Za-z0-9]+', text)
+
 
         text = temp
 

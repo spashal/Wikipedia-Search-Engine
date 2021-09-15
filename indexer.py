@@ -13,14 +13,19 @@ def work_with_index_list(indices, id, field, curTokens, counter):
     # capturing the inverted index
     for i in range(len(curTokens)):
         counter += 1
-        if len(curTokens[i]) > 20:
+        if len(curTokens[i]) > 15 or curTokens[i] == "":
             continue
         totalTokens.add(curTokens[i])
-        if curTokens[i] in indices[field]:
-            indices[field][curTokens[i]].add(id)
+        if curTokens[i] not in indices:
+            indices[curTokens[i]] = {}
+            indices[curTokens[i]][id] = set()
+            indices[curTokens[i]][id].add(field)
         else:
-            indices[field][curTokens[i]] = set()
-            indices[field][curTokens[i]].add(id)
+            if id not in indices[curTokens[i]]:
+                indices[curTokens[i]][id] = set()
+                indices[curTokens[i]][id].add(field)
+            else:
+                indices[curTokens[i]][id].add(field)
     return counter, indices
 
 def add_to_index(text, id, indices, counter):
@@ -44,6 +49,6 @@ def add_to_index(text, id, indices, counter):
         curTokens = temp
 
         # capturing the inverted index
-        counter, indices = work_with_index_list(indices, id, fields[j], curTokens, counter)
+        counter, indices = work_with_index_list(indices, id, j, curTokens, counter)
     
     return counter, indices

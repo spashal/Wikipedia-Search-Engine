@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 dump
+temp_data
+2019101082
 
 # Distribution / packaging
 .Python
