@@ -55,7 +55,10 @@ def give_scores(query, weights):
             index = mid
             break
         elif files_index[mid] < query:
-            down = mid
+            if files_index[mid] > query:
+                index = mid
+                break
+            down = mid+1
         elif files_index[mid-1] < query:
             index = mid-1
             break
