@@ -32,7 +32,7 @@ def get_title(doc_id):
     file_no = -1
     for i in titles_index:
         if titles_index[i] <= int(doc_id):
-            file_no = i
+            file_no = int(i)
         else:
             break
     fil = open('./palash/' + str(file_no) + '-titles.txt', 'r')
