@@ -110,14 +110,13 @@ def give_scores(query, weights):
         for j in posting_list_readable[i]:
             if i not in scores:
                 scores[i] = 1
-            templar += math.log(1+posting_list_readable[i][j])*idf[j]*weights[j] 
-        if len(i) > 0:
-            scores[i] *= templar
+            scores[i] += math.log(1+posting_list_readable[i][j])*idf[j]*weights[j] 
+        
 
 
 
 processed_queries = []
-weights = [2.5, 3, 0.2, 0.8, 1, 5]
+weights = [1, 0.4, 0.001, 0.001, 0.8, 5]
 
 for queri in queries:
     processed_queries = []
@@ -136,9 +135,9 @@ for queri in queries:
         # for field query, flex the weights according to field and send for scoring
         for i in range(1, len(check)):
             temp_weights = weights.copy()
-            for j in range(6):
-                temp_weights[j] /= 4
-            temp_weights[field_symbols[symbol]-1] = 10
+            # for j in range(6):
+            #     temp_weights[j] /= 4
+            temp_weights[field_symbols[symbol]-1] = 500
             tokenizedQuery = re.split(r'[^A-Za-z0-9]+', check[i])
             for j in tokenizedQuery:
                 if len(j) > 1 and j not in stop_words_set:
