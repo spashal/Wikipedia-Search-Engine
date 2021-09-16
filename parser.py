@@ -14,7 +14,7 @@ ENCODING = 'utf-8'
 indices = {}         # this is the inverted index
 count = 0
 titles_storage = {}
-title_doc_count = 0
+title_doc_count = 1
 
 def write_index_to_file(name):
     global indices, count
@@ -91,7 +91,7 @@ for event, elem in etree.iterparse(pathWikiXML, events=('start', 'end')):
                 continue
             if firstID == 0:
                 firstID = id
-            if docCount % 2000000 == 0 and docCount > 0:
+            if docCount >= 500000:
                 f = open(sys.argv[2] + '/' + str(title_doc_count) + "-" + "titles.txt", 'w')
                 f.write(json.dumps(titles_storage))
                 f.close()
@@ -144,7 +144,7 @@ f.write(str(counter) + '\n')
 f.write(str(len(totalTokens)))
 f.close()
 
-f = open(sys.argv[2] + '/' + str(title_doc_count) + "titles.txt", 'w')
+f = open(sys.argv[2] + '/' + str(title_doc_count) + "-titles.txt", 'w')
 f.write(json.dumps(titles_storage))
 f.close()
 merger(indexFilesCount, sys.argv[2])
