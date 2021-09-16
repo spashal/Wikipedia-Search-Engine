@@ -1,7 +1,9 @@
 import sys, os, heapq, json
 
-def merger(no_of_files, path):
+files_index = []
 
+def merger(no_of_files, path):
+    global files_index
     k = no_of_files
     pq = []
     count_merged_files = 0
@@ -13,11 +15,10 @@ def merger(no_of_files, path):
         line = f_ptr.readline().strip('\n')
         word = line.split(':')[0]
         lst = line.split(':')[1]
-        pq.append((word[1:], i, f_ptr, lst))
+        pq.append((word, i, f_ptr, lst))
 
     # maintain a min heap of keys for each k files, their pointers and their  file numbers
     # (this will be useful while deciding which file to process first when they have the same key)
-    # print(pq)
     heapq.heapify(pq)
 
     # maintain a new merged index where we will append the keys
@@ -37,6 +38,9 @@ def merger(no_of_files, path):
         # when we reach our limit of tokens and each token is complete in iteself, we can make a new file, write this file name and word in another file index
         elif tokensCount > 30000:
             count_merged_files += 1
+            for i in merged_index:
+                files_index.append(i)
+                break
             json_dump = json.dumps(merged_index,indent=0)
             f = open(path + '/' + str(count_merged_files) + '-merged' + '.txt', 'w')
             f.write(json_dump)
@@ -62,8 +66,14 @@ def merger(no_of_files, path):
 
     # write into file one last time before we exit the function          
     count_merged_files += 1
+    for i in merged_index:
+        files_index.append(i)
+        break
     json_dump = json.dumps(merged_index,indent=0)
     f = open(path + '/' + str(count_merged_files) + '-merged' + '.txt', 'w')
     f.write(json_dump)
     f.close()
 
+    f = open(path + '/files_index.txt', 'w')
+    f.write(json.dumps(files_index))
+    f.close()

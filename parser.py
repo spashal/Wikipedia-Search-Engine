@@ -13,6 +13,8 @@ ENCODING = 'utf-8'
 
 indices = {}         # this is the inverted index
 count = 0
+titles_storage = {}
+title_doc_count = 0
 
 def write_index_to_file(name):
     global indices, count
@@ -62,6 +64,7 @@ articleCount = 0
 redirectCount = 0
 templateCount = 0
 docCount = 0
+firstID = 0
 indexFilesCount = 1
 start_time = time.time()
 fields = ['infobox', 'category', 'links', 'references', 'body', 'title']
@@ -86,6 +89,15 @@ for event, elem in etree.iterparse(pathWikiXML, events=('start', 'end')):
             id = int(elem.text)
             if title == None:
                 continue
+            if firstID == 0:
+                firstID = id
+            if docCount % 2000000 == 0 and docCount > 0:
+                f = open(sys.argv[2] + '/' + str(title_doc_count) + "-" + "titles.txt", 'w')
+                f.write(json.dumps(titles_storage))
+                f.close()
+                title_doc_count += 1
+                titles_storage = {}
+            titles_storage[id] = title
             title = title.casefold()
             curTokens = re.split(r'[^A-Za-z0-9]+', title)
 
@@ -132,4 +144,12 @@ f.write(str(counter) + '\n')
 f.write(str(len(totalTokens)))
 f.close()
 
+f = open(sys.argv[2] + '/' + str(title_doc_count) + "titles.txt", 'w')
+f.write(json.dumps(titles_storage))
+f.close()
+merger(indexFilesCount, sys.argv[2])
+
+f = open(sys.argv[2] + "/minID.txt", 'w')
+f.write(str(firstID))
+f.close()
 merger(indexFilesCount, sys.argv[2])
