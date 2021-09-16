@@ -116,7 +116,7 @@ def give_scores(query, weights):
 
 
 processed_queries = []
-weights = [1, 0.4, 0.001, 0.001, 0.8, 5]
+weights = [1.5, 0.4, 0.001, 0.001, 0.5, 5]
 
 for queri in queries:
     processed_queries = []
