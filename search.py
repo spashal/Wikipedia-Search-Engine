@@ -132,8 +132,8 @@ for queri in queries:
         # for field query, flex the weights according to field and send for scoring
         for i in range(1, len(check)):
             temp_weights = weights.copy()
-            for i in range(6):
-                temp_weights[i] /= 4
+            for j in range(6):
+                temp_weights[j] /= 4
             temp_weights[field_symbols[symbol]-1] = 10
             tokenizedQuery = re.split(r'[^A-Za-z0-9]+', check[i])
             for j in tokenizedQuery:
