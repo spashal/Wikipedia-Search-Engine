@@ -9,21 +9,26 @@ stop_words_set = set(stopwords.words('english'))
 stemmer = SnowballStemmer(language='english')
 
 # sys.argv[1] has path to index files
-f = open('./palash/files_index.txt', 'r')
-ff = open('./palash/minId.txt', 'r')
+f = open('./index/files_index.txt', 'r')
+ff = open('./index/minId.txt', 'r')
 first_id = int(ff.read())
 files_index = json.load(f)
 
-query = sys.argv[2]
-check = re.split(':', query.casefold())
+query_path = sys.argv[1]
+f = open(query_path, 'r')
+queries = []
+query = f.readline().strip('\n')
+while query:
+    queries.append(query)
+    query = f.readline().strip('\n')
+
 scores = {}
 total_docs_global = 21300000
 
 def get_title(doc_id):
-    # print("getting title for", doc_id)
     global first_id
     file_no = int((int(doc_id)-first_id)/500000) + 1
-    fil = open('./palash/' + str(file_no) + '-titles.txt', 'r')
+    fil = open('./index/' + str(file_no) + '-titles.txt', 'r')
     files = json.load(fil)
     if doc_id not in files:
         return "doc_title_not_found"
@@ -31,7 +36,6 @@ def get_title(doc_id):
 
 def give_scores(query, weights):
     # perform tf-idf on query 
-    # print("making scores for", query)
     global scores, total_docs_global, files_index
 
     # find where the word is in indexes
@@ -59,8 +63,7 @@ def give_scores(query, weights):
     if index < 0:
         return -1
     index += 1
-    print(query, " must be in ", index, "-merged.txt")
-    f = open(sys.argv[1] + '/' + str(index) + '-merged.txt', 'r')
+    f = open('./index'+ '/' + str(index) + '-merged.txt', 'r')
     merged_index = json.load(f)
     if query not in merged_index:
         return -1
@@ -96,45 +99,47 @@ def give_scores(query, weights):
 
 
 processed_queries = []
-query = []
 weights = [2.5, 3, 0.2, 0.8, 1, 5]
 
+for queri in queries:
+    processed_queries = []
+    scores = {}
+    check = re.split(':', queri.casefold())
 # check if the query is field or plain
-if len(check) == 1:
-    # for plain query, fix the weights and send for scoring
-    tokenizedQuery = re.split(r'[^A-Za-z0-9]+', check[0])
-    for i in tokenizedQuery:
-        if len(i) > 1 and i not in stop_words_set:
-            processed_queries.append(stemmer.stem(i))
-            give_scores(i, weights)
-else:
-    symbol = re.split(r'[^A-Za-z0-9]+', check[0])[0]
-    # for field query, flex the weights according to field and send for scoring
-    for i in range(1, len(check)):
-        temp_weights = weights.copy()
-        # symbol = re.split(r'[^A-Za-z0-9]+', check[i])
-        temp_weights[field_symbols[symbol]-1] = 10
-        tokenizedQuery = re.split(r'[^A-Za-z0-9]+', check[i])
-        for j in tokenizedQuery:
-            if len(j) > 1 and j not in stop_words_set:
-                processed_queries.append(stemmer.stem(j))
-                give_scores(j, temp_weights)
-        symbol = tokenizedQuery[-1]
+    if len(check) == 1:
+        # for plain query, fix the weights and send for scoring
+        tokenizedQuery = re.split(r'[^A-Za-z0-9]+', check[0])
+        for i in tokenizedQuery:
+            if len(i) > 1 and i not in stop_words_set:
+                processed_queries.append(stemmer.stem(i))
+                give_scores(i, weights)
+    else:
+        symbol = re.split(r'[^A-Za-z0-9]+', check[0])[0]
+        # for field query, flex the weights according to field and send for scoring
+        for i in range(1, len(check)):
+            temp_weights = weights.copy()
+            temp_weights[field_symbols[symbol]-1] = 10
+            tokenizedQuery = re.split(r'[^A-Za-z0-9]+', check[i])
+            for j in tokenizedQuery:
+                if len(j) > 1 and j not in stop_words_set:
+                    processed_queries.append(stemmer.stem(j))
+                    give_scores(j, temp_weights)
+            symbol = tokenizedQuery[-1]
 
-# after the getting the scores, select 10 docs and retrieve titles (make a separate function for this)
-sorted_docs = dict(sorted(scores.items(), key=lambda item: -item[1]))
-result = ''
-count = 0
-for i in sorted_docs:
-    count += 1
-    result += i + ', '
-    result += get_title(i) + '\n'
-    if count > 10:
-        break
+    # after the getting the scores, select 10 docs and retrieve titles (make a separate function for this)
+    sorted_docs = dict(sorted(scores.items(), key=lambda item: -item[1]))
+    result = ''
+    count = 0
+    for i in sorted_docs:
+        count += 1
+        result += i + ', '
+        result += get_title(i) + '\n'
+        if count > 10:
+            break
 
-print(result)
-# f = open('./result.txt', 'w')
-# f.write(result)
-# f.close()
+    result += '\n'
+    f = open('./queries_op.txt', 'a')
+    f.write(result)
+    f.close()
 
 
