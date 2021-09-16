@@ -9,8 +9,8 @@ stop_words_set = set(stopwords.words('english'))
 stemmer = SnowballStemmer(language='english')
 
 # sys.argv[1] has path to index files
-f = open('./index/files_index.txt', 'r')
-ff = open('./index/minId.txt', 'r')
+f = open('./palash/files_index.txt', 'r')
+ff = open('./palash/minId.txt', 'r')
 first_id = int(ff.read())
 files_index = json.load(f)
 
@@ -28,7 +28,7 @@ total_docs_global = 21300000
 def get_title(doc_id):
     global first_id
     file_no = int((int(doc_id)-first_id)/500000) + 1
-    fil = open('./index/' + str(file_no) + '-titles.txt', 'r')
+    fil = open('./palash/' + str(file_no) + '-titles.txt', 'r')
     files = json.load(fil)
     if doc_id not in files:
         return "doc_title_not_found"
@@ -63,7 +63,7 @@ def give_scores(query, weights):
     if index < 0:
         return -1
     index += 1
-    f = open('./index'+ '/' + str(index) + '-merged.txt', 'r')
+    f = open('./palash'+ '/' + str(index) + '-merged.txt', 'r')
     merged_index = json.load(f)
     if query not in merged_index:
         return -1
