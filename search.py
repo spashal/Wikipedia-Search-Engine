@@ -13,6 +13,8 @@ f = open('./palash/files_index.txt', 'r')
 ff = open('./palash/minId.txt', 'r')
 first_id = int(ff.read())
 files_index = json.load(f)
+f = open('./palash/titles_index.txt', 'r')
+titles_index = json.load(f)
 
 query_path = sys.argv[1]
 f = open(query_path, 'r')
@@ -27,7 +29,12 @@ total_docs_global = 21300000
 
 def get_title(doc_id):
     global first_id
-    file_no = int((int(doc_id)-first_id)/500000) + 1
+    file_no = -1
+    for i in titles_index:
+        if titles_index[i] <= int(doc_id):
+            file_no = i
+        else:
+            break
     fil = open('./palash/' + str(file_no) + '-titles.txt', 'r')
     files = json.load(fil)
     if doc_id not in files:
