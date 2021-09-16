@@ -106,10 +106,13 @@ def give_scores(query, weights):
 
     # loop over all docs to calculate fieldwise scores also using weights for fields
     for i in posting_list_readable:
+        templar = 0
         for j in posting_list_readable[i]:
             if i not in scores:
-                scores[i] = 0
-            scores[i] += math.log(1+posting_list_readable[i][j])*idf[j]*weights[j]    
+                scores[i] = 1
+            templar += math.log(1+posting_list_readable[i][j])*idf[j]*weights[j] 
+        scores[i] *= templar
+
 
 
 processed_queries = []
