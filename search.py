@@ -50,7 +50,7 @@ def give_scores(query, weights):
     down = 0
     index = -1
     while up >= down:
-        print("here ", down, up)
+        # print("here ", down, up)
         if files_index[up] <= query:
             index = up
             break
@@ -77,7 +77,7 @@ def give_scores(query, weights):
         return -1
     index += 1
     f = open('./palash'+ '/' + str(index) + '-merged.txt', 'r')
-    print("loaded ", index, "merged.txt")
+    # print("loaded ", index, "merged.txt")
     merged_index = json.load(f)
     if query not in merged_index:
         return -1
@@ -132,6 +132,8 @@ for queri in queries:
         # for field query, flex the weights according to field and send for scoring
         for i in range(1, len(check)):
             temp_weights = weights.copy()
+            for i in range(6):
+                temp_weights[i] /= 4
             temp_weights[field_symbols[symbol]-1] = 10
             tokenizedQuery = re.split(r'[^A-Za-z0-9]+', check[i])
             for j in tokenizedQuery:
