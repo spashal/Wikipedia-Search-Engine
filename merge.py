@@ -35,6 +35,9 @@ def merger(no_of_files, path):
                 word = line.split(':')[0]
                 lst = line.split(':')[1]
                 heapq.heappush(pq, (word, cur[1], cur[2], lst))
+            else:
+                cur[2].close()
+                os.remove(path + '/' + str(cur[1]) + '.txt')
         # when we reach our limit of tokens and each token is complete in iteself, we can make a new file, write this file name and word in another file index
         elif tokensCount > 30000:
             count_merged_files += 1
@@ -49,10 +52,14 @@ def merger(no_of_files, path):
             tokensCount = 1
             merged_index[cur[0]] = str(cur[3])
             line = cur[2].readline().strip('\n')
-            word = line.split(':')[0]
-            lst = line.split(':')[1]
+           
             if line:
+                word = line.split(':')[0]
+                lst = line.split(':')[1]
                 heapq.heappush(pq, (word, cur[1], cur[2], lst))
+            else:
+                cur[2].close()
+                os.remove(path + '/' + str(cur[1]) + '.txt')
         else:
             tokensCount += 1
             merged_index[cur[0]] = str(cur[3])
@@ -61,6 +68,9 @@ def merger(no_of_files, path):
                 word = line.split(':')[0]
                 lst = line.split(':')[1]
                 heapq.heappush(pq, (word, cur[1], cur[2], lst))
+            else:
+                cur[2].close()
+                os.remove(path + '/' + str(cur[1]) + '.txt')
         
         # continue until all the files have been merged
 
@@ -77,3 +87,5 @@ def merger(no_of_files, path):
     f = open(path + '/files_index.txt', 'w')
     f.write(json.dumps(files_index))
     f.close()
+
+merge(2137, './palash')
