@@ -13,6 +13,7 @@ ENCODING = 'utf-8'
 
 indices = {}         # this is the inverted index
 count = 0
+idcount = 0
 titles_storage = {}
 title_doc_count = 1
 
@@ -91,6 +92,9 @@ for event, elem in etree.iterparse(pathWikiXML, events=('start', 'end')):
                 continue
             if firstID == 0:
                 firstID = id
+            idcount += 1
+            if idcount % 50000 == 0:
+                print("on the", int(idcount/50000), "* 50000th doc")
             if docCount >= 500000:
                 f = open(sys.argv[2] + '/' + str(title_doc_count) + "-" + "titles.txt", 'w')
                 f.write(json.dumps(titles_storage))
@@ -153,3 +157,5 @@ f = open(sys.argv[2] + "/minID.txt", 'w')
 f.write(str(firstID))
 f.close()
 merger(indexFilesCount, sys.argv[2])
+
+print(counter, "is the count of tokens")
