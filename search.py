@@ -43,7 +43,7 @@ def give_scores(query, weights):
     down = 0
     index = -1
     while up >= down:
-        # print("here ", down, up)
+        print("here ", down, up)
         if files_index[up] <= query:
             index = up
             break
@@ -64,6 +64,7 @@ def give_scores(query, weights):
         return -1
     index += 1
     f = open('./palash'+ '/' + str(index) + '-merged.txt', 'r')
+    print("loaded ", index, "merged.txt")
     merged_index = json.load(f)
     if query not in merged_index:
         return -1
