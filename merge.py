@@ -39,7 +39,7 @@ def merger(no_of_files, path):
                 cur[2].close()
                 os.remove(path + '/' + str(cur[1]) + '.txt')
         # when we reach our limit of tokens and each token is complete in iteself, we can make a new file, write this file name and word in another file index
-        elif tokensCount > 30000:
+        elif sys.getsizeof(merged_index) > 5*1024*1024:
             count_merged_files += 1
             for i in merged_index:
                 files_index.append(i)
