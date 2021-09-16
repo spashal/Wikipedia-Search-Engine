@@ -111,7 +111,8 @@ def give_scores(query, weights):
             if i not in scores:
                 scores[i] = 1
             templar += math.log(1+posting_list_readable[i][j])*idf[j]*weights[j] 
-        scores[i] *= templar
+        if len(i) > 0:
+            scores[i] *= templar
 
 
 
